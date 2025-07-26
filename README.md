@@ -15,8 +15,11 @@
 HTMLの `<head>` または `<body>` 終了タグ前に1行追加するだけ：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js" 
-        data-site-id="your-site-id" defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
+  data-site-id="your-site-id"
+  defer
+></script>
 ```
 
 ### ステップ 2️⃣: サイトIDを設定
@@ -24,8 +27,11 @@ HTMLの `<head>` または `<body>` 終了タグ前に1行追加するだけ：
 `your-site-id` をあなたのウェブサイト名に変更：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js" 
-        data-site-id="my-awesome-site" defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
+  data-site-id="my-awesome-site"
+  defer
+></script>
 ```
 
 ### ステップ 3️⃣: 完了！
@@ -37,13 +43,15 @@ HTMLの `<head>` または `<body>` 終了タグ前に1行追加するだけ：
 
 ```html
 <!-- より詳細な設定例 -->
-<script src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
-        data-site-id="my-site"
-        data-language="ja"
-        data-theme="light"
-        data-position="bottom"
-        data-webhook-url="https://your-webhook.workers.dev/collect"
-        defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
+  data-site-id="my-site"
+  data-language="ja"
+  data-theme="light"
+  data-position="bottom"
+  data-webhook-url="https://your-webhook.workers.dev/collect"
+  defer
+></script>
 ```
 
 - `data-language`: `"ja"` (日本語) または `"en"` (English)
@@ -71,15 +79,15 @@ HTMLの `<head>` または `<body>` 終了タグ前に1行追加するだけ：
 ### HTMLサイトでの使用
 
 ```html
-<script 
+<script
   src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
   data-site-id="your-site-id"
   data-webhook-url="https://your-worker.workers.dev/collect"
   data-language="ja"
   data-theme="light"
   data-position="bottom"
-  defer>
-</script>
+  defer
+></script>
 ```
 
 ### React/Next.jsでの使用
@@ -93,11 +101,11 @@ import { CookieConsentProvider, CookieBanner } from '@cookie-ja/react';
 
 function App() {
   return (
-    <CookieConsentProvider 
+    <CookieConsentProvider
       config={{
         siteId: 'your-site-id',
         webhookUrl: 'https://your-worker.workers.dev/collect',
-        language: 'ja'
+        language: 'ja',
       }}
     >
       <YourApp />
@@ -109,17 +117,17 @@ function App() {
 
 ## 📦 パッケージ
 
-| パッケージ | 説明 | NPMバッジ |
-|-----------|------|-----------|
-| `@cookie-ja/core` | 共通ロジックと型定義 | [![npm](https://img.shields.io/npm/v/@cookie-ja/core.svg)](https://www.npmjs.com/package/@cookie-ja/core) |
-| `@cookie-ja/react` | React Hooks & Components | [![npm](https://img.shields.io/npm/v/@cookie-ja/react.svg)](https://www.npmjs.com/package/@cookie-ja/react) |
-| `@cookie-ja/widget` | Vanilla JS UMD Widget | [![npm](https://img.shields.io/npm/v/@cookie-ja/widget.svg)](https://www.npmjs.com/package/@cookie-ja/widget) |
+| パッケージ          | 説明                     | NPMバッジ                                                                                                     |
+| ------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `@cookie-ja/core`   | 共通ロジックと型定義     | [![npm](https://img.shields.io/npm/v/@cookie-ja/core.svg)](https://www.npmjs.com/package/@cookie-ja/core)     |
+| `@cookie-ja/react`  | React Hooks & Components | [![npm](https://img.shields.io/npm/v/@cookie-ja/react.svg)](https://www.npmjs.com/package/@cookie-ja/react)   |
+| `@cookie-ja/widget` | Vanilla JS UMD Widget    | [![npm](https://img.shields.io/npm/v/@cookie-ja/widget.svg)](https://www.npmjs.com/package/@cookie-ja/widget) |
 
 ## 🛠 開発環境のセットアップ
 
 ### 前提条件
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 8+
 
 ### インストール
@@ -164,19 +172,19 @@ cookie-ja/
 
 ```typescript
 interface CookieConsentConfig {
-  siteId: string;                    // 必須: サイト識別子
-  version?: string;                  // バージョン (デフォルト: '1.0.0')
-  language?: 'ja' | 'en';           // 言語 (デフォルト: 'ja')
+  siteId: string; // 必須: サイト識別子
+  version?: string; // バージョン (デフォルト: '1.0.0')
+  language?: 'ja' | 'en'; // 言語 (デフォルト: 'ja')
   theme?: 'light' | 'dark' | 'auto'; // テーマ (デフォルト: 'light')
   position?: 'bottom' | 'top' | 'center'; // 位置 (デフォルト: 'bottom')
   layout?: 'box' | 'bar' | 'cloud'; // レイアウト (デフォルト: 'box')
-  webhookUrl?: string;               // 同意ログ送信先
-  
+  webhookUrl?: string; // 同意ログ送信先
+
   // ボタン表示制御
-  acceptAllButton?: boolean;         // (デフォルト: true)
-  rejectAllButton?: boolean;         // (デフォルト: true)  
+  acceptAllButton?: boolean; // (デフォルト: true)
+  rejectAllButton?: boolean; // (デフォルト: true)
   managePreferencesButton?: boolean; // (デフォルト: true)
-  
+
   // イベントハンドラ
   onAccept?: (consent: ConsentData) => void;
   onReject?: (consent: ConsentData) => void;
@@ -253,12 +261,12 @@ MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照してくださ�
 
 ## 🤝 コントリビューション
 
-Issue・Pull Requestを歓迎します！ 
+Issue・Pull Requestを歓迎します！
 
 1. フォークする
-2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+2. フィーチャーブランチを作成 (`git checkout -b feat/amazing-feature`)
 3. コミット (`git commit -m 'Add amazing feature'`)
-4. プッシュ (`git push origin feature/amazing-feature`)
+4. プッシュ (`git push origin feat/amazing-feature`)
 5. Pull Requestを開く
 
 ## 📞 サポート

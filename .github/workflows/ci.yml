@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, next] # PR 時に必ず実行
+  push:
+    branches: [main, next] # CI 手動実行用（一応）
+
+jobs:
+  # ① 依存を install（ターボのキャッシュキーも作成）
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.turbo-cache.outputs.cache-primary }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm # npm ci を cache に連動
+
+      - name: Install deps
+        run: npm ci # pnpm 派なら setup-pnpm + pnpm install
+
+      # Turbo キャッシュ
+      - name: Turbo cache
+        id: turbo-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: turbo-${{ github.ref }}-${{ hashFiles('**/turbo.json') }}
+
+      # 保存した key を下流ジョブへ渡す
+      - name: Export cache key
+        run: echo "cache-key=${{ steps.turbo-cache.outputs.cache-primary }}" >> $GITHUB_OUTPUT
+
+  # ② lint
+  lint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - name: Restore turbo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ needs.setup.outputs.cache-key }}
+      - run: npm run lint
+
+  # ③ type-check
+  typecheck:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ needs.setup.outputs.cache-key }}
+      - run: npm run type-check
+
+  # ④ unit test
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ needs.setup.outputs.cache-key }}
+      - run: npm run test
+
+  # ⑤ build （成功した artefact が必要なら upload-artifact で渡す）
+  build:
+    needs: [lint, typecheck, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache/turbo
+          key: ${{ needs.setup.outputs.cache-key }}
+      - run: npm run build
