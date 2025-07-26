@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie-JA デモ</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .demo-controls button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .demo-controls button.primary {
+            background: #3182ce;
+            color: white;
+        }
+        
+        .demo-controls button.primary:hover {
+            background: #2c5aa0;
+        }
+        
+        .demo-controls button.secondary {
+            background: #e2e8f0;
+            color: #333;
+        }
+        
+        .demo-controls button.secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .status {
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .status.info {
+            background: #e6f3ff;
+            border: 1px solid #b3d9ff;
+        }
+        
+        .theme-selector {
+            margin: 1rem 0;
+        }
+        
+        .theme-selector label {
+            margin-right: 1rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        pre {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🍪 Cookie-JA デモ</h1>
+        <p>日本の法令に準拠したクッキー同意バナーライブラリ</p>
+    </div>
+
+    <div class="demo-section">
+        <h2>🚀 基本的な使用方法</h2>
+        <p>以下のコードを HTML に追加するだけで、APPI 準拠のクッキー同意バナーを表示できます：</p>
+        
+        <pre><code>&lt;script 
+  src="https://cdn.jsdelivr.net/npm/@cookie-ja/widget@latest/dist/cookie-ja.umd.js"
+  data-site-id="demo-site-123"
+  data-webhook-url="https://your-worker.your-subdomain.workers.dev/collect"
+  data-language="ja"
+  data-theme="light"
+  data-position="bottom"
+  defer&gt;
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <div class="demo-section">
+        <h2>⚡ JavaScript API デモ</h2>
+        
+        <div class="theme-selector">
+            <label>
+                <input type="radio" name="theme" value="light" checked>
+                ライトテーマ
+            </label>
+            <label>
+                <input type="radio" name="theme" value="dark">
+                ダークテーマ
+            </label>
+            <label>
+                <input type="radio" name="theme" value="auto">
+                自動
+            </label>
+        </div>
+
+        <div class="demo-controls">
+            <button class="primary" onclick="showBanner()">バナーを表示</button>
+            <button class="secondary" onclick="hideBanner()">バナーを隠す</button>
+            <button class="secondary" onclick="acceptAll()">すべて同意</button>
+            <button class="secondary" onclick="rejectAll()">すべて拒否</button>
+            <button class="secondary" onclick="resetConsent()">同意をリセット</button>
+            <button class="secondary" onclick="checkStatus()">状態確認</button>
+        </div>
+
+        <div id="status" class="status info">
+            Cookie-JA が初期化されています...
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>📊 同意状態</h2>
+        <div id="consent-details" class="status info">
+            同意情報が読み込まれていません
+        </div>
+    </div>
+
+    <div class="demo-section">
+        <h2>🔧 設定例</h2>
+        
+        <h3>React での使用</h3>
+        <pre><code>import { CookieConsentProvider, CookieBanner, useCookieConsent } from '@cookie-ja/react';
+
+function App() {
+  return (
+    &lt;CookieConsentProvider 
+      config={{
+        siteId: 'my-site-123',
+        webhookUrl: 'https://my-worker.my-subdomain.workers.dev/collect',
+        language: 'ja',
+        theme: 'light'
+      }}
+    &gt;
+      &lt;YourApp /&gt;
+      &lt;CookieBanner /&gt;
+    &lt;/CookieConsentProvider&gt;
+  );
+}</code></pre>
+
+        <h3>JavaScript API</h3>
+        <pre><code>// 手動初期化
+const cookieJA = window.initCookieJA({
+  siteId: 'my-site-123',
+  webhookUrl: 'https://my-worker.my-subdomain.workers.dev/collect',
+  language: 'ja',
+  onAccept: (consent) => {
+    console.log('同意されました:', consent);
+    // Google Analytics 初期化など
+  },
+  onReject: (consent) => {
+    console.log('拒否されました:', consent);
+  }
+});
+
+// 状態確認
+if (cookieJA.hasConsent()) {
+  const consent = cookieJA.getConsent();
+  if (consent.categories.analytics) {
+    // 分析ツール初期化
+  }
+}</code></pre>
+    </div>
+
+    <div class="demo-section">
+        <h2>🌍 多言語対応</h2>
+        <div class="demo-controls">
+            <button class="secondary" onclick="setLanguage('ja')">日本語</button>
+            <button class="secondary" onclick="setLanguage('en')">English</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Cookie-JA は MIT ライセンスのオープンソースプロジェクトです</p>
+        <p>🔗 <a href="https://github.com/your-org/cookie-ja">GitHub</a> | 📖 <a href="https://cookie-ja.dev">ドキュメント</a></p>
+    </div>
+
+    <!-- Cookie-JA Script (Auto-initialized) -->
+    <script 
+        src="../packages/web-component/dist/cookie-ja.umd.js"
+        data-site-id="demo-site-123"
+        data-webhook-url="https://cookie-ja-webhook.your-subdomain.workers.dev/collect"
+        data-language="ja"
+        data-theme="light"
+        data-position="bottom"
+        defer>
+    </script>
+
+    <script>
+        // Wait for Cookie-JA to initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            updateConsentDetails();
+            
+            // Check every 2 seconds for updates
+            setInterval(updateConsentDetails, 2000);
+        });
+
+        function showBanner() {
+            if (window.cookieJA) {
+                window.cookieJA.showBanner();
+                updateStatus('バナーを表示しました');
+            }
+        }
+
+        function hideBanner() {
+            if (window.cookieJA) {
+                window.cookieJA.hideBanner();
+                updateStatus('バナーを隠しました');
+            }
+        }
+
+        function acceptAll() {
+            if (window.cookieJA) {
+                window.cookieJA.acceptAll();
+                updateStatus('すべてのクッキーに同意しました');
+                setTimeout(updateConsentDetails, 100);
+            }
+        }
+
+        function rejectAll() {
+            if (window.cookieJA) {
+                window.cookieJA.rejectAll();
+                updateStatus('すべてのクッキーを拒否しました');
+                setTimeout(updateConsentDetails, 100);
+            }
+        }
+
+        function resetConsent() {
+            if (window.cookieJA) {
+                window.cookieJA.resetConsent();
+                updateStatus('同意をリセットしました');
+                setTimeout(updateConsentDetails, 100);
+            }
+        }
+
+        function checkStatus() {
+            if (window.cookieJA) {
+                const hasConsent = window.cookieJA.hasConsent();
+                const consent = window.cookieJA.getConsent();
+                updateStatus(`同意状況: ${hasConsent ? '同意済み' : '未同意'}`);
+                console.log('Cookie-JA Status:', { hasConsent, consent });
+            }
+        }
+
+        function setLanguage(lang) {
+            // For demo purposes - normally you'd reinitialize with new config
+            updateStatus(`言語を ${lang === 'ja' ? '日本語' : 'English'} に設定しました（実装例）`);
+        }
+
+        function updateStatus(message) {
+            const statusEl = document.getElementById('status');
+            if (message) {
+                statusEl.textContent = message;
+            } else {
+                if (window.cookieJA) {
+                    statusEl.textContent = 'Cookie-JA が正常に初期化されました';
+                } else {
+                    statusEl.textContent = 'Cookie-JA の初期化を待機中...';
+                }
+            }
+        }
+
+        function updateConsentDetails() {
+            const detailsEl = document.getElementById('consent-details');
+            
+            if (window.cookieJA) {
+                const hasConsent = window.cookieJA.hasConsent();
+                const consent = window.cookieJA.getConsent();
+                
+                if (hasConsent && consent) {
+                    const details = `
+✅ 同意済み (${new Date(consent.timestamp).toLocaleString('ja-JP')})
+📍 サイトID: ${consent.siteId}
+🆔 バージョン: ${consent.version}
+
+📊 カテゴリ別同意状況:
+• 必要なクッキー: ${consent.categories.necessary ? '✅' : '❌'}
+• 機能性クッキー: ${consent.categories.functional ? '✅' : '❌'}  
+• 分析クッキー: ${consent.categories.analytics ? '✅' : '❌'}
+• 広告クッキー: ${consent.categories.marketing ? '✅' : '❌'}
+                    `.trim();
+                    detailsEl.textContent = details;
+                } else {
+                    detailsEl.textContent = '❌ まだ同意が行われていません';
+                }
+            } else {
+                detailsEl.textContent = '⏳ Cookie-JA の初期化を待機中...';
+            }
+        }
+
+        // Theme change handler
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'theme') {
+                const theme = e.target.value;
+                // For demo - you'd normally reinitialize with new theme
+                updateStatus(`テーマを ${theme} に変更しました（実装例）`);
+                
+                // Update CSS custom properties for demo
+                const root = document.documentElement;
+                if (theme === 'dark') {
+                    root.style.setProperty('--cookie-banner-bg', '#2d3748');
+                    root.style.setProperty('--cookie-banner-text', '#f7fafc');
+                    root.style.setProperty('--cookie-banner-border', '#4a5568');
+                } else {
+                    root.style.setProperty('--cookie-banner-bg', '#fff');
+                    root.style.setProperty('--cookie-banner-text', '#333');
+                    root.style.setProperty('--cookie-banner-border', '#e0e0e0');
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

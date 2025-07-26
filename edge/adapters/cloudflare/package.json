@@ -1,0 +1,35 @@
+{
+  "name": "@cookie-ja/cloudflare-adapter",
+  "version": "0.1.0",
+  "description": "Cloudflare Workers adapter for cookie consent logging to KV",
+  "main": "dist/worker.js",
+  "types": "dist/worker.d.ts",
+  "files": [
+    "dist",
+    "wrangler.toml"
+  ],
+  "scripts": {
+    "build": "tsup src/worker.ts --format esm --target esnext --dts",
+    "dev": "wrangler dev src/worker.ts --local",
+    "deploy": "wrangler deploy",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "cookie",
+    "consent",
+    "kv"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@cookie-ja/core": "file:../../../packages/core"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "wrangler": "^3.0.0",
+    "typescript": "^5.0.0",
+    "tsup": "^8.0.0"
+  }
+} 

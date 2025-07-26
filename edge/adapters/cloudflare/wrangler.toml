@@ -1,0 +1,28 @@
+name = "cookie-ja-webhook"
+main = "src/worker.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# KV Bindings
+[[kv_namespaces]]
+binding = "COOKIE_CONSENT_KV"
+id = "your-kv-namespace-id-here"
+preview_id = "your-preview-kv-namespace-id-here"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "your-rate-limit-kv-namespace-id-here"
+preview_id = "your-rate-limit-preview-kv-namespace-id-here"
+
+# Environment variables
+[env.production.vars]
+ALLOWED_ORIGINS = "https://yourdomain.com,https://*.yourdomain.com"
+# SECRET_KEY = "your-secret-key-here" # Use wrangler secret put for sensitive values
+
+[env.staging.vars]
+ALLOWED_ORIGINS = "*"
+
+# Routes (optional - for custom domain)
+# routes = [
+#   { pattern = "cookie-consent.yourdomain.com/*", zone_name = "yourdomain.com" }
+# ] 

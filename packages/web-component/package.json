@@ -1,0 +1,42 @@
+{
+  "name": "@cookie-ja/widget",
+  "version": "0.1.0",
+  "description": "Vanilla JavaScript UMD widget for cookie consent management",
+  "main": "dist/cookie-ja.umd.js",
+  "module": "dist/cookie-ja.esm.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/cookie-ja.umd.js",
+  "jsdelivr": "dist/cookie-ja.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/cookie-ja.esm.js",
+      "require": "./dist/cookie-ja.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm,iife --globalName CookieJA --dts",
+    "dev": "tsup src/index.ts --format iife --globalName CookieJA --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "cookie",
+    "consent",
+    "vanilla",
+    "javascript",
+    "umd",
+    "web-component"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@cookie-ja/core": "file:../core"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsup": "^8.0.0"
+  }
+} 

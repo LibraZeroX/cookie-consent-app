@@ -1,0 +1,49 @@
+{
+  "name": "@cookie-ja/monorepo",
+  "version": "0.1.0",
+  "description": "Cookie consent management library for Japanese legal compliance (APPI/GDPR)",
+  "private": true,
+  "packageManager": "npm@10.0.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "edge/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean"
+  },
+  "keywords": [
+    "cookie",
+    "consent",
+    "gdpr",
+    "appi",
+    "privacy",
+    "japan",
+    "react",
+    "nextjs",
+    "vue",
+    "wordpress",
+    "typescript"
+  ],
+  "author": "Sakamoto T.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LibraZeroX/cookie-consent-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LibraZeroX/cookie-consent-app/issues"
+  },
+  "homepage": "https://github.com/LibraZeroX/cookie-consent-app#readme",
+  "devDependencies": {
+    "turbo": "*",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0"
+  }
+}
