@@ -12,5 +12,5 @@ export type { CookieConsentProviderProps } from './CookieConsentProvider';
 export type {
   ConsentCategories,
   ConsentData,
-  CookieConsentConfig
-} from '@cookie-ja/core'; 
+  CookieConsentConfig,
+} from '@cookie-ja/core';

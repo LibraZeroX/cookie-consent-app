@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+.turbo/
+
+# Coverage reports
+coverage/
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# Lock files (format should not be changed)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+*.min.js
+*.min.css
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+
+# Specific files that should not be formatted
+CHANGELOG.md
+LICENSE 

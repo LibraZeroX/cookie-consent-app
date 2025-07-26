@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useCookieConsentContext } from '../CookieConsentProvider';
-import { JAPANESE_TEXTS, ENGLISH_TEXTS, ConsentCategories } from '@cookie-ja/core';
+import {
+  JAPANESE_TEXTS,
+  ENGLISH_TEXTS,
+  ConsentCategories,
+} from '@cookie-ja/core';
 
 export function CookieBanner() {
   const {
@@ -10,16 +14,16 @@ export function CookieBanner() {
     rejectAll,
     updateConsent,
     hideBanner,
-    consent
+    consent,
   } = useCookieConsentContext();
-  
+
   const [showPreferences, setShowPreferences] = useState(false);
   const [tempCategories, setTempCategories] = useState<ConsentCategories>(
     consent?.categories || {
       necessary: true,
       functional: false,
       analytics: false,
-      marketing: false
+      marketing: false,
     }
   );
 
@@ -36,10 +40,10 @@ export function CookieBanner() {
 
   const toggleCategory = (category: keyof ConsentCategories) => {
     if (category === 'necessary') return; // 必要なクッキーは変更不可
-    
+
     setTempCategories(prev => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
@@ -47,54 +51,59 @@ export function CookieBanner() {
     <>
       {/* オーバーレイ */}
       {showPreferences && (
-        <div className="cookie-banner-overlay" onClick={() => setShowPreferences(false)} />
+        <div
+          className='cookie-banner-overlay'
+          onClick={() => setShowPreferences(false)}
+        />
       )}
-      
+
       {/* メインバナー */}
-      <div className={`cookie-banner cookie-banner--${config.position} cookie-banner--${config.theme}`}>
-        <div className="cookie-banner__content">
-          <div className="cookie-banner__text">
-            <h3 className="cookie-banner__title">{texts.title}</h3>
-            <p className="cookie-banner__description">{texts.description}</p>
+      <div
+        className={`cookie-banner cookie-banner--${config.position} cookie-banner--${config.theme}`}
+      >
+        <div className='cookie-banner__content'>
+          <div className='cookie-banner__text'>
+            <h3 className='cookie-banner__title'>{texts.title}</h3>
+            <p className='cookie-banner__description'>{texts.description}</p>
           </div>
-          
-          <div className="cookie-banner__actions">
+
+          <div className='cookie-banner__actions'>
             {config.rejectAllButton && (
               <button
-                className="cookie-banner__button cookie-banner__button--secondary"
+                className='cookie-banner__button cookie-banner__button--secondary'
                 onClick={rejectAll}
-                type="button"
+                type='button'
               >
                 {texts.rejectAll}
               </button>
             )}
-            
+
             {config.managePreferencesButton && (
               <button
-                className="cookie-banner__button cookie-banner__button--tertiary"
+                className='cookie-banner__button cookie-banner__button--tertiary'
                 onClick={() => setShowPreferences(true)}
-                type="button"
+                type='button'
               >
                 {texts.managePreferences}
               </button>
             )}
-            
+
             {config.acceptAllButton && (
               <button
-                className="cookie-banner__button cookie-banner__button--primary"
+                className='cookie-banner__button cookie-banner__button--primary'
                 onClick={acceptAll}
-                type="button"
+                type='button'
               >
                 {texts.acceptAll}
               </button>
             )}
           </div>
         </div>
-        
+
         <button
-          className="cookie-banner__close"
+          className='cookie-banner__close'
           onClick={hideBanner}
-          type="button"
+          type='button'
           aria-label={texts.close}
         >
           ×
@@ -103,54 +112,66 @@ export function CookieBanner() {
 
       {/* 設定モーダル */}
       {showPreferences && (
-        <div className="cookie-preferences">
-          <div className="cookie-preferences__content">
-            <div className="cookie-preferences__header">
-              <h2 className="cookie-preferences__title">{texts.managePreferences}</h2>
+        <div className='cookie-preferences'>
+          <div className='cookie-preferences__content'>
+            <div className='cookie-preferences__header'>
+              <h2 className='cookie-preferences__title'>
+                {texts.managePreferences}
+              </h2>
               <button
-                className="cookie-preferences__close"
+                className='cookie-preferences__close'
                 onClick={() => setShowPreferences(false)}
-                type="button"
+                type='button'
                 aria-label={texts.close}
               >
                 ×
               </button>
             </div>
-            
-            <div className="cookie-preferences__body">
-              {Object.entries(texts.categories).map(([category, categoryTexts]) => (
-                <div key={category} className="cookie-category">
-                  <div className="cookie-category__header">
-                    <div className="cookie-category__info">
-                      <h3 className="cookie-category__title">{categoryTexts.title}</h3>
-                      <p className="cookie-category__description">{categoryTexts.description}</p>
+
+            <div className='cookie-preferences__body'>
+              {Object.entries(texts.categories).map(
+                ([category, categoryTexts]) => (
+                  <div key={category} className='cookie-category'>
+                    <div className='cookie-category__header'>
+                      <div className='cookie-category__info'>
+                        <h3 className='cookie-category__title'>
+                          {categoryTexts.title}
+                        </h3>
+                        <p className='cookie-category__description'>
+                          {categoryTexts.description}
+                        </p>
+                      </div>
+                      <label className='cookie-toggle'>
+                        <input
+                          type='checkbox'
+                          checked={
+                            tempCategories[category as keyof ConsentCategories]
+                          }
+                          onChange={() =>
+                            toggleCategory(category as keyof ConsentCategories)
+                          }
+                          disabled={category === 'necessary'}
+                        />
+                        <span className='cookie-toggle__slider'></span>
+                      </label>
                     </div>
-                    <label className="cookie-toggle">
-                      <input
-                        type="checkbox"
-                        checked={tempCategories[category as keyof ConsentCategories]}
-                        onChange={() => toggleCategory(category as keyof ConsentCategories)}
-                        disabled={category === 'necessary'}
-                      />
-                      <span className="cookie-toggle__slider"></span>
-                    </label>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
-            
-            <div className="cookie-preferences__footer">
+
+            <div className='cookie-preferences__footer'>
               <button
-                className="cookie-banner__button cookie-banner__button--secondary"
+                className='cookie-banner__button cookie-banner__button--secondary'
                 onClick={() => setShowPreferences(false)}
-                type="button"
+                type='button'
               >
                 {texts.close}
               </button>
               <button
-                className="cookie-banner__button cookie-banner__button--primary"
+                className='cookie-banner__button cookie-banner__button--primary'
                 onClick={handleSavePreferences}
-                type="button"
+                type='button'
               >
                 {texts.save}
               </button>
@@ -180,7 +201,14 @@ export function CookieBanner() {
           border-radius: var(--cookie-banner-radius, 8px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           z-index: 1000;
-          font-family: var(--cookie-banner-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+          font-family: var(
+            --cookie-banner-font,
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            Roboto,
+            sans-serif
+          );
           font-size: 14px;
           line-height: 1.5;
         }
@@ -389,7 +417,7 @@ export function CookieBanner() {
 
         .cookie-toggle__slider:before {
           position: absolute;
-          content: "";
+          content: '';
           height: 18px;
           width: 18px;
           left: 3px;
@@ -448,4 +476,4 @@ export function CookieBanner() {
       `}</style>
     </>
   );
-} 
+}

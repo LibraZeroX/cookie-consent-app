@@ -5,7 +5,7 @@ import { useCookieConsentContext } from '../CookieConsentProvider';
  */
 export function useCookieConsent() {
   const context = useCookieConsentContext();
-  
+
   return {
     // 現在の同意状態
     consent: context.consent,
@@ -14,12 +14,12 @@ export function useCookieConsent() {
       necessary: true,
       functional: false,
       analytics: false,
-      marketing: false
+      marketing: false,
     },
-    
+
     // バナー表示状態
     showBanner: context.showBanner,
-    
+
     // アクション
     acceptAll: context.acceptAll,
     rejectAll: context.rejectAll,
@@ -27,8 +27,8 @@ export function useCookieConsent() {
     showPreferences: context.showPreferences,
     hideBanner: context.hideBanner,
     resetConsent: context.resetConsent,
-    
+
     // 設定
-    config: context.config
+    config: context.config,
   };
-} 
+}

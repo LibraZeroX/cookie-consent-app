@@ -50,7 +50,8 @@ export interface WebhookPayload {
 // APPI準拠の日本語文面テンプレート
 export const JAPANESE_TEXTS = {
   title: 'クッキーの使用について',
-  description: 'ウェブサイトの機能向上のため、お客様の同意を得てクッキーを使用させていただきます。以下のカテゴリごとに同意をお選びいただけます。',
+  description:
+    'ウェブサイトの機能向上のため、お客様の同意を得てクッキーを使用させていただきます。以下のカテゴリごとに同意をお選びいただけます。',
   acceptAll: 'すべて同意',
   rejectAll: 'すべて拒否',
   managePreferences: '設定する',
@@ -59,29 +60,31 @@ export const JAPANESE_TEXTS = {
   categories: {
     necessary: {
       title: '必要なクッキー',
-      description: 'サイトの基本機能に必要なクッキーです。これらは常に有効です。'
+      description:
+        'サイトの基本機能に必要なクッキーです。これらは常に有効です。',
     },
     functional: {
       title: '機能性クッキー',
-      description: 'ウェブサイトの機能向上のためのクッキーです。'
+      description: 'ウェブサイトの機能向上のためのクッキーです。',
     },
     analytics: {
       title: '分析クッキー',
-      description: 'サイト利用状況の分析に使用するクッキーです。'
+      description: 'サイト利用状況の分析に使用するクッキーです。',
     },
     marketing: {
       title: '広告クッキー',
-      description: 'パーソナライズされた広告配信のためのクッキーです。'
-    }
+      description: 'パーソナライズされた広告配信のためのクッキーです。',
+    },
   },
   policyLink: 'プライバシーポリシー',
-  poweredBy: 'Powered by Cookie-JA'
+  poweredBy: 'Powered by Cookie-JA',
 } as const;
 
 // 英語文面テンプレート
 export const ENGLISH_TEXTS = {
   title: 'Cookie Usage',
-  description: 'We use cookies to improve website functionality with your consent. You can choose consent for each category below.',
+  description:
+    'We use cookies to improve website functionality with your consent. You can choose consent for each category below.',
   acceptAll: 'Accept All',
   rejectAll: 'Reject All',
   managePreferences: 'Manage Preferences',
@@ -90,23 +93,24 @@ export const ENGLISH_TEXTS = {
   categories: {
     necessary: {
       title: 'Necessary Cookies',
-      description: 'Cookies required for basic site functionality. These are always enabled.'
+      description:
+        'Cookies required for basic site functionality. These are always enabled.',
     },
     functional: {
       title: 'Functional Cookies',
-      description: 'Cookies for website functionality improvements.'
+      description: 'Cookies for website functionality improvements.',
     },
     analytics: {
       title: 'Analytics Cookies',
-      description: 'Cookies for analyzing site usage statistics.'
+      description: 'Cookies for analyzing site usage statistics.',
     },
     marketing: {
       title: 'Marketing Cookies',
-      description: 'Cookies for personalized advertising delivery.'
-    }
+      description: 'Cookies for personalized advertising delivery.',
+    },
   },
   policyLink: 'Privacy Policy',
-  poweredBy: 'Powered by Cookie-JA'
+  poweredBy: 'Powered by Cookie-JA',
 } as const;
 
 // ユーティリティ関数
@@ -116,11 +120,11 @@ export class CookieManager {
 
   static saveConsent(data: ConsentData): void {
     const payload = JSON.stringify(data);
-    
+
     // Cookie保存 (SameSite=Lax; Secure)
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
-    
+
     try {
       document.cookie = `${this.COOKIE_NAME}=${encodeURIComponent(payload)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax; Secure`;
     } catch (e) {
@@ -166,7 +170,7 @@ export class CookieManager {
   static clearConsent(): void {
     // Cookie削除
     document.cookie = `${this.COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    
+
     // localStorage削除
     try {
       localStorage.removeItem(this.LS_KEY);
@@ -182,20 +186,20 @@ export class CookieManager {
 
 // Webhook送信ユーティリティ
 export async function sendConsentWebhook(
-  webhookUrl: string, 
+  webhookUrl: string,
   data: ConsentData,
   userAgent?: string
 ): Promise<void> {
   // UIDハッシュ生成（プライバシー保護）
   const uidHash = await generateUidHash(data.uid || 'anonymous');
-  
+
   const payload: WebhookPayload = {
     siteId: data.siteId,
     uidHash,
     timestamp: new Date(data.timestamp).toISOString(),
     categories: data.categories,
     version: data.version,
-    userAgent
+    userAgent,
   };
 
   try {
@@ -204,7 +208,7 @@ export async function sendConsentWebhook(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
   } catch (error) {
     console.warn('Failed to send consent webhook:', error);
@@ -220,12 +224,12 @@ async function generateUidHash(uid: string): Promise<string> {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
-  
+
   // フォールバック（簡易ハッシュ）
   let hash = 0;
   for (let i = 0; i < uid.length; i++) {
     const char = uid.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // 32bit integer
   }
   return Math.abs(hash).toString(16);
@@ -242,7 +246,7 @@ export const DEFAULT_CONFIG: Partial<CookieConsentConfig> = {
   rejectAllButton: true,
   managePreferencesButton: true,
   cookieName: 'cookie_ja_consent',
-  cookieExpiry: 365
+  cookieExpiry: 365,
 };
 
 // デフォルトカテゴリ（必要以外はfalse）
@@ -250,5 +254,5 @@ export const DEFAULT_CATEGORIES: ConsentCategories = {
   necessary: true,
   functional: false,
   analytics: false,
-  marketing: false
-}; 
+  marketing: false,
+};

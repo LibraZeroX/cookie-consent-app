@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import {
   ConsentData,
   ConsentCategories,
@@ -6,7 +12,7 @@ import {
   CookieManager,
   DEFAULT_CONFIG,
   DEFAULT_CATEGORIES,
-  sendConsentWebhook
+  sendConsentWebhook,
 } from '@cookie-ja/core';
 
 interface CookieConsentContextValue {
@@ -21,14 +27,19 @@ interface CookieConsentContextValue {
   resetConsent: () => void;
 }
 
-const CookieConsentContext = createContext<CookieConsentContextValue | null>(null);
+const CookieConsentContext = createContext<CookieConsentContextValue | null>(
+  null
+);
 
 export interface CookieConsentProviderProps {
   config: CookieConsentConfig;
   children: ReactNode;
 }
 
-export function CookieConsentProvider({ config, children }: CookieConsentProviderProps) {
+export function CookieConsentProvider({
+  config,
+  children,
+}: CookieConsentProviderProps) {
   const mergedConfig = { ...DEFAULT_CONFIG, ...config };
   const [consent, setConsent] = useState<ConsentData | null>(null);
   const [showBanner, setShowBanner] = useState(false);
@@ -45,13 +56,16 @@ export function CookieConsentProvider({ config, children }: CookieConsentProvide
   }, [mergedConfig.siteId]);
 
   // 同意データ保存とWebhook送信
-  const saveConsentData = async (categories: ConsentCategories, action: 'accept' | 'reject' | 'update') => {
+  const saveConsentData = async (
+    categories: ConsentCategories,
+    action: 'accept' | 'reject' | 'update'
+  ) => {
     const consentData: ConsentData = {
       version: mergedConfig.version || '1.0.0',
       categories,
       timestamp: Date.now(),
       siteId: mergedConfig.siteId!,
-      uid: crypto.randomUUID?.() || Math.random().toString(36)
+      uid: crypto.randomUUID?.() || Math.random().toString(36),
     };
 
     // ローカル保存
@@ -90,7 +104,7 @@ export function CookieConsentProvider({ config, children }: CookieConsentProvide
       necessary: true,
       functional: true,
       analytics: true,
-      marketing: true
+      marketing: true,
     };
     saveConsentData(allCategories, 'accept');
     setShowBanner(false);
@@ -131,7 +145,7 @@ export function CookieConsentProvider({ config, children }: CookieConsentProvide
     updateConsent,
     showPreferences,
     hideBanner,
-    resetConsent
+    resetConsent,
   };
 
   return (
@@ -144,7 +158,9 @@ export function CookieConsentProvider({ config, children }: CookieConsentProvide
 export function useCookieConsentContext(): CookieConsentContextValue {
   const context = useContext(CookieConsentContext);
   if (!context) {
-    throw new Error('useCookieConsentContext must be used within a CookieConsentProvider');
+    throw new Error(
+      'useCookieConsentContext must be used within a CookieConsentProvider'
+    );
   }
   return context;
-} 
+}

@@ -20,6 +20,16 @@
     "type-check": {
       "dependsOn": ["^type-check"],
       "outputs": []
+    },
+    "format": {
+      "outputs": []
+    },
+    "format:check": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "outputs": []
     }
   }
-} 
+}

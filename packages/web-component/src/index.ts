@@ -12,7 +12,7 @@ import {
   DEFAULT_CATEGORIES,
   JAPANESE_TEXTS,
   ENGLISH_TEXTS,
-  sendConsentWebhook
+  sendConsentWebhook,
 } from '@cookie-ja/core';
 
 // グローバルAPI
@@ -29,17 +29,19 @@ class CookieJAWidget {
 
   private async init() {
     if (this.isInitialized) return;
-    
+
     // 既存の同意データを読み込み
     this.consent = CookieManager.getConsent();
-    
+
     // DOM ready まで待機
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.showBannerIfNeeded());
+      document.addEventListener('DOMContentLoaded', () =>
+        this.showBannerIfNeeded()
+      );
     } else {
       this.showBannerIfNeeded();
     }
-    
+
     this.isInitialized = true;
   }
 
@@ -78,7 +80,7 @@ class CookieJAWidget {
       necessary: true,
       functional: true,
       analytics: true,
-      marketing: true
+      marketing: true,
     };
     this.saveConsent(categories, 'accept');
   }
@@ -98,13 +100,16 @@ class CookieJAWidget {
     this.showBanner();
   }
 
-  private async saveConsent(categories: ConsentCategories, action: 'accept' | 'reject' | 'update') {
+  private async saveConsent(
+    categories: ConsentCategories,
+    action: 'accept' | 'reject' | 'update'
+  ) {
     const consentData: ConsentData = {
       version: this.config.version || '1.0.0',
       categories,
       timestamp: Date.now(),
       siteId: this.config.siteId!,
-      uid: crypto.randomUUID?.() || Math.random().toString(36)
+      uid: crypto.randomUUID?.() || Math.random().toString(36),
     };
 
     // ローカル保存
@@ -114,7 +119,11 @@ class CookieJAWidget {
     // Webhook送信
     if (this.config.webhookUrl) {
       try {
-        await sendConsentWebhook(this.config.webhookUrl, consentData, navigator.userAgent);
+        await sendConsentWebhook(
+          this.config.webhookUrl,
+          consentData,
+          navigator.userAgent
+        );
       } catch (error) {
         console.warn('Failed to send consent webhook:', error);
       }
@@ -137,11 +146,12 @@ class CookieJAWidget {
   }
 
   private createBannerElement(): HTMLElement {
-    const texts = this.config.language === 'en' ? ENGLISH_TEXTS : JAPANESE_TEXTS;
-    
+    const texts =
+      this.config.language === 'en' ? ENGLISH_TEXTS : JAPANESE_TEXTS;
+
     const banner = document.createElement('div');
     banner.className = `cookie-ja-banner cookie-ja-banner--${this.config.position} cookie-ja-banner--${this.config.theme}`;
-    
+
     banner.innerHTML = `
       <div class="cookie-ja-banner__content">
         <div class="cookie-ja-banner__text">
@@ -149,31 +159,43 @@ class CookieJAWidget {
           <p class="cookie-ja-banner__description">${texts.description}</p>
         </div>
         <div class="cookie-ja-banner__actions">
-          ${this.config.rejectAllButton ? `
+          ${
+            this.config.rejectAllButton
+              ? `
             <button class="cookie-ja-banner__button cookie-ja-banner__button--secondary" data-action="reject">
               ${texts.rejectAll}
             </button>
-          ` : ''}
-          ${this.config.managePreferencesButton ? `
+          `
+              : ''
+          }
+          ${
+            this.config.managePreferencesButton
+              ? `
             <button class="cookie-ja-banner__button cookie-ja-banner__button--tertiary" data-action="preferences">
               ${texts.managePreferences}
             </button>
-          ` : ''}
-          ${this.config.acceptAllButton ? `
+          `
+              : ''
+          }
+          ${
+            this.config.acceptAllButton
+              ? `
             <button class="cookie-ja-banner__button cookie-ja-banner__button--primary" data-action="accept">
               ${texts.acceptAll}
             </button>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
       </div>
       <button class="cookie-ja-banner__close" data-action="close" aria-label="${texts.close}">×</button>
     `;
 
     // イベントリスナー追加
-    banner.addEventListener('click', (e) => {
+    banner.addEventListener('click', e => {
       const target = e.target as HTMLElement;
       const action = target.dataset.action;
-      
+
       switch (action) {
         case 'accept':
           this.acceptAll();
@@ -202,12 +224,13 @@ class CookieJAWidget {
   }
 
   private showPreferencesModal() {
-    const texts = this.config.language === 'en' ? ENGLISH_TEXTS : JAPANESE_TEXTS;
+    const texts =
+      this.config.language === 'en' ? ENGLISH_TEXTS : JAPANESE_TEXTS;
     const currentCategories = this.consent?.categories || DEFAULT_CATEGORIES;
-    
+
     const modal = document.createElement('div');
     modal.className = 'cookie-ja-preferences';
-    
+
     modal.innerHTML = `
       <div class="cookie-ja-preferences__overlay"></div>
       <div class="cookie-ja-preferences__content">
@@ -216,7 +239,9 @@ class CookieJAWidget {
           <button class="cookie-ja-preferences__close" data-action="close">×</button>
         </div>
         <div class="cookie-ja-preferences__body">
-          ${Object.entries(texts.categories).map(([category, categoryTexts]) => `
+          ${Object.entries(texts.categories)
+            .map(
+              ([category, categoryTexts]) => `
             <div class="cookie-ja-category">
               <div class="cookie-ja-category__header">
                 <div class="cookie-ja-category__info">
@@ -234,7 +259,9 @@ class CookieJAWidget {
                 </label>
               </div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
         <div class="cookie-ja-preferences__footer">
           <button class="cookie-ja-banner__button cookie-ja-banner__button--secondary" data-action="close">
@@ -248,24 +275,24 @@ class CookieJAWidget {
     `;
 
     // イベントリスナー
-    modal.addEventListener('click', (e) => {
+    modal.addEventListener('click', e => {
       const target = e.target as HTMLElement;
       const action = target.dataset.action;
-      
+
       if (action === 'close') {
         document.body.removeChild(modal);
       } else if (action === 'save') {
         const checkboxes = modal.querySelectorAll('input[type="checkbox"]');
         const categories: ConsentCategories = { ...DEFAULT_CATEGORIES };
-        
-        checkboxes.forEach((checkbox) => {
+
+        checkboxes.forEach(checkbox => {
           const input = checkbox as HTMLInputElement;
           const category = input.dataset.category as keyof ConsentCategories;
           if (category) {
             categories[category] = input.checked;
           }
         });
-        
+
         this.updateConsent(categories);
         document.body.removeChild(modal);
       }
@@ -503,13 +530,17 @@ function initCookieJA(config: CookieConsentConfig): CookieJAWidget {
 
 // Auto-init from script tag data attributes
 document.addEventListener('DOMContentLoaded', () => {
-  const script = document.querySelector('script[data-site-id]') as HTMLScriptElement;
+  const script = document.querySelector(
+    'script[data-site-id]'
+  ) as HTMLScriptElement;
   if (script) {
     const siteId = script.dataset.siteId;
     const webhookUrl = script.dataset.webhookUrl;
-    const language = script.dataset.language as 'ja' | 'en' || 'ja';
-    const theme = script.dataset.theme as 'light' | 'dark' | 'auto' || 'light';
-    const position = script.dataset.position as 'bottom' | 'top' | 'center' || 'bottom';
+    const language = (script.dataset.language as 'ja' | 'en') || 'ja';
+    const theme =
+      (script.dataset.theme as 'light' | 'dark' | 'auto') || 'light';
+    const position =
+      (script.dataset.position as 'bottom' | 'top' | 'center') || 'bottom';
 
     if (siteId) {
       const config: CookieConsentConfig = {
@@ -517,9 +548,9 @@ document.addEventListener('DOMContentLoaded', () => {
         language,
         theme,
         position,
-        webhookUrl
+        webhookUrl,
       };
-      
+
       window.cookieJA = initCookieJA(config);
     }
   }
@@ -539,4 +570,4 @@ export { CookieJAWidget, initCookieJA };
 // Global assignment for UMD
 if (typeof window !== 'undefined') {
   window.initCookieJA = initCookieJA;
-} 
+}

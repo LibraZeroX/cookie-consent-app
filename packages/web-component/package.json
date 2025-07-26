@@ -21,7 +21,11 @@
     "build": "tsup src/index.ts --format cjs,esm,iife --globalName CookieJA --dts",
     "dev": "tsup src/index.ts --format iife --globalName CookieJA --watch",
     "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "format": "prettier --write 'src/**/*.{ts,tsx,json,md}'",
+    "format:check": "prettier --check 'src/**/*.{ts,tsx,json,md}'"
   },
   "keywords": [
     "cookie",
@@ -39,4 +43,4 @@
     "typescript": "^5.0.0",
     "tsup": "^8.0.0"
   }
-} 
+}
